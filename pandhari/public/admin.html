@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PPMS - Admin Dashboard</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <a href="/admin.html" class="active">Dashboard</a>
+      <a href="/billing.html">Billing</a>
+      <a href="/sales.html">Sales</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <div class="card">
+          <h2 class="title">Fuel Stock</h2>
+          <div class="grid" style="margin-bottom:12px">
+            <div>
+              <label class="label">Type</label>
+              <input id="fuelType" class="input" placeholder="e.g. Petrol" />
+            </div>
+            <div>
+              <label class="label">Price / Liter</label>
+              <input id="fuelPrice" class="input" type="number" step="0.01" />
+            </div>
+            <div>
+              <label class="label">Stock (Liters)</label>
+              <input id="fuelStock" class="input" type="number" step="0.01" />
+            </div>
+            <div style="align-self:end">
+              <button id="addFuelBtn" class="btn">Add Fuel</button>
+            </div>
+          </div>
+          <table class="table" id="fuelTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Type</th>
+                <th>Price/L</th>
+                <th>Stock (L)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <h2 class="title">Employees</h2>
+          <div class="grid" style="margin-bottom:12px">
+            <div>
+              <label class="label">Name</label>
+              <input id="empName" class="input" />
+            </div>
+            <div>
+              <label class="label">Role</label>
+              <input id="empRole" class="input" />
+            </div>
+            <div>
+              <label class="label">Phone</label>
+              <input id="empPhone" class="input" />
+            </div>
+            <div style="align-self:end">
+              <button id="addEmpBtn" class="btn">Add Employee</button>
+            </div>
+          </div>
+          <table class="table" id="empTable">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Role</th>
+                <th>Phone</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="/js/admin.js"></script>
+</body>
+</html>
+
+

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PPMS - Admin Login</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="center">
+    <div class="card" style="max-width:420px;width:100%">
+      <h1 class="title">Admin Login</h1>
+      <p class="muted">Use your admin credentials to continue.</p>
+      <div id="msg" class="notice" style="display:none"></div>
+      <form id="loginForm">
+        <label class="label" for="username">Username</label>
+        <input class="input" id="username" name="username" required />
+        <label class="label" for="password">Password</label>
+        <input class="input" id="password" name="password" type="password" required />
+        <div style="margin-top:14px;display:flex;gap:10px;align-items:center">
+          <button class="btn" type="submit">Login</button>
+          <span id="error" class="error"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="/js/auth.js"></script>
+</body>
+<script>
+</script>
+</html>
+
+
