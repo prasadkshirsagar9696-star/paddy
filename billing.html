@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PPMS - Billing</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <a href="/admin.html">Dashboard</a>
+      <a href="/billing.html" class="active">Billing</a>
+      <a href="/sales.html">Sales</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+    <div class="card">
+      <h2 class="title">Customer Billing</h2>
+      <div class="grid" style="margin-bottom:12px">
+        <div>
+          <label class="label">Fuel Type</label>
+          <select id="fuelSelect" class="input"></select>
+        </div>
+        <div>
+          <label class="label">Price / Liter</label>
+          <input id="pricePerLiter" class="input" type="number" step="0.01" disabled />
+        </div>
+        <div>
+          <label class="label">Quantity (Liters)</label>
+          <input id="quantityLiters" class="input" type="number" step="0.01" />
+        </div>
+        <div>
+          <label class="label">Customer Name (optional)</label>
+          <input id="customerName" class="input" />
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <button id="calcBtn" class="btn secondary">Calculate</button>
+        <button id="submitSaleBtn" class="btn">Submit Sale</button>
+        <span class="muted">Total: </span>
+        <strong id="totalAmount">0.00</strong>
+      </div>
+      <div id="billMsg" class="notice" style="display:none;margin-top:12px"></div>
+    </div>
+  </div>
+  <script src="/js/billing.js"></script>
+</body>
+</html>
+
+

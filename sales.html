@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PPMS - Sales History</title>
+  <link rel="stylesheet" href="/css/styles.css" />
+</head>
+<body>
+  <div class="container">
+    <div class="nav">
+      <a href="/admin.html">Dashboard</a>
+      <a href="/billing.html">Billing</a>
+      <a href="/sales.html" class="active">Sales</a>
+      <a href="#" id="logoutBtn">Logout</a>
+    </div>
+    <div class="card">
+      <h2 class="title">Recent Transactions</h2>
+      <table class="table" id="salesTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Fuel</th>
+            <th>Qty (L)</th>
+            <th>Price/L</th>
+            <th>Total</th>
+            <th>Customer</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <script src="/js/sales.js"></script>
+</body>
+</html>
+
+

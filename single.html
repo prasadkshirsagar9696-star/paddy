@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PPMS - Single File App</title>
+  <style>
+:root{
+  --bg:#0f172a; --card:#111827; --muted:#94a3b8; --text:#e5e7eb; --accent:#22c55e; --danger:#ef4444; --border:#1f2937;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text)}
+a{color:inherit;text-decoration:none}
+input,select,button,textarea{font:inherit}
+
+.container{max-width:1100px;margin:0 auto;padding:24px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px}
+.row{display:flex;gap:16px;flex-wrap:wrap}
+.col{flex:1 1 320px}
+.title{font-size:22px;margin:0 0 12px}
+.muted{color:var(--muted)}
+
+.table{width:100%;border-collapse:collapse}
+.table th,.table td{border-bottom:1px solid var(--border);padding:10px;text-align:left}
+.table th{color:var(--muted);font-weight:600}
+
+.btn{background:var(--accent);border:none;color:#052e16;padding:10px 14px;border-radius:8px;cursor:pointer}
+.btn.secondary{background:#334155;color:#e2e8f0}
+.btn.danger{background:var(--danger);color:#1c1917}
+.btn:disabled{opacity:.6;cursor:not-allowed}
+
+.input{width:100%;background:#0b1220;border:1px solid var(--border);color:var(--text);padding:10px 12px;border-radius:8px}
+.label{display:block;margin:8px 0 6px;color:#cbd5e1}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.actions{display:flex;gap:8px}
+
+.nav{display:flex;gap:16px;margin-bottom:16px}
+.nav a{padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:#0b1220}
+.nav a.active{outline:2px solid var(--accent)}
+
+.center{display:flex;min-height:100vh;align-items:center;justify-content:center;padding:24px}
+
+.notice{padding:10px 12px;border-radius:8px;background:#0b1220;border:1px solid var(--border);color:#a3e635}
+.error{color:#fecaca}
+  </style>
+</head>
+<body>
+  <div id="loginSection" class="center" style="display:none">
+    <div class="card" style="max-width:420px;width:100%">
+      <h1 class="title">Admin Login</h1>
+      <p class="muted">Use your admin credentials to continue.</p>
+      <div id="msg" class="notice" style="display:none"></div>
+      <form id="loginForm">
+        <label class="label" for="username">Username</label>
+        <input class="input" id="username" name="username" required />
+        <label class="label" for="password">Password</label>
+        <input class="input" id="password" name="password" type="password" required />
+        <div style="margin-top:14px;display:flex;gap:10px;align-items:center">
+          <button class="btn" type="submit">Login</button>
+          <span id="error" class="error"></span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="appSection" class="container" style="display:none">
+    <div class="nav">
+      <a href="#dashboard" data-route="dashboard" class="active">Dashboard</a>
+      <a href="#billing" data-route="billing">Billing</a>
+      <a href="#sales" data-route="sales">Sales</a>
+      <a href="#logout" id="logoutBtn">Logout</a>
+    </div>
+
+    <div id="route-dashboard">
+      <div class="row">
+        <div class="col">
+          <div class="card">
+            <h2 class="title">Fuel Stock</h2>
+            <div class="grid" style="margin-bottom:12px">
+              <div>
+                <label class="label">Type</label>
+                <input id="fuelType" class="input" placeholder="e.g. Petrol" />
+              </div>
+              <div>
+                <label class="label">Price / Liter</label>
+                <input id="fuelPrice" class="input" type="number" step="0.01" />
+              </div>
+              <div>
+                <label class="label">Stock (Liters)</label>
+                <input id="fuelStock" class="input" type="number" step="0.01" />
+              </div>
+              <div style="align-self:end">
+                <button id="addFuelBtn" class="btn">Add Fuel</button>
+              </div>
+            </div>
+            <table class="table" id="fuelTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Type</th>
+                  <th>Price/L</th>
+                  <th>Stock (L)</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col">
+          <div class="card">
+            <h2 class="title">Employees</h2>
+            <div class="grid" style="margin-bottom:12px">
+              <div>
+                <label class="label">Name</label>
+                <input id="empName" class="input" />
+              </div>
+              <div>
+                <label class="label">Role</label>
+                <input id="empRole" class="input" />
+              </div>
+              <div>
+                <label class="label">Phone</label>
+                <input id="empPhone" class="input" />
+              </div>
+              <div style="align-self:end">
+                <button id="addEmpBtn" class="btn">Add Employee</button>
+              </div>
+            </div>
+            <table class="table" id="empTable">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Phone</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="route-billing" style="display:none">
+      <div class="card">
+        <h2 class="title">Customer Billing</h2>
+        <div class="grid" style="margin-bottom:12px">
+          <div>
+            <label class="label">Fuel Type</label>
+            <select id="fuelSelect" class="input"></select>
+          </div>
+          <div>
+            <label class="label">Price / Liter</label>
+            <input id="pricePerLiter" class="input" type="number" step="0.01" disabled />
+          </div>
+          <div>
+            <label class="label">Quantity (Liters)</label>
+            <input id="quantityLiters" class="input" type="number" step="0.01" />
+          </div>
+          <div>
+            <label class="label">Customer Name (optional)</label>
+            <input id="customerName" class="input" />
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px">
+          <button id="calcBtn" class="btn secondary">Calculate</button>
+          <button id="submitSaleBtn" class="btn">Submit Sale</button>
+          <span class="muted">Total: </span>
+          <strong id="totalAmount">0.00</strong>
+        </div>
+        <div id="billMsg" class="notice" style="display:none;margin-top:12px"></div>
+      </div>
+    </div>
+
+    <div id="route-sales" style="display:none">
+      <div class="card">
+        <h2 class="title">Recent Transactions</h2>
+        <table class="table" id="salesTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Fuel</th>
+              <th>Qty (L)</th>
+              <th>Price/L</th>
+              <th>Total</th>
+              <th>Customer</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script>
+// Ensure API requests work when the site is served from a subdirectory
+(function(){
+  const origFetch = window.fetch.bind(window);
+  window.fetch = (input, init) => {
+    try {
+      if (typeof input === 'string' && input.startsWith('/api/')) {
+        const basePrefix = (window.location.pathname.includes('/pandhari/')) ? '/pandhari/public' : '';
+        input = basePrefix + input;
+      }
+    } catch {}
+    return origFetch(input, init);
+  };
+})();
+
+// Simple router for sections
+function setActiveRoute(route) {
+  document.querySelectorAll('.nav a[data-route]')
+    .forEach(a => a.classList.toggle('active', a.getAttribute('data-route') === route));
+  document.getElementById('route-dashboard').style.display = route === 'dashboard' ? '' : 'none';
+  document.getElementById('route-billing').style.display = route === 'billing' ? '' : 'none';
+  document.getElementById('route-sales').style.display = route === 'sales' ? '' : 'none';
+  if (route === 'dashboard') { loadFuel(); loadEmployees(); }
+  if (route === 'billing') { loadFuelOptions(); }
+  if (route === 'sales') { loadSales(); }
+}
+
+window.addEventListener('hashchange', () => {
+  const r = location.hash.replace('#', '') || 'dashboard';
+  setActiveRoute(r);
+});
+
+// Auth and session helpers
+async function logout() {
+  try { await fetch('/api/logout', { method: 'POST' }); } catch {}
+  location.hash = 'dashboard';
+  document.getElementById('appSection').style.display = 'none';
+  document.getElementById('loginSection').style.display = '';
+}
+
+document.getElementById('logoutBtn').addEventListener('click', (e) => {
+  e.preventDefault();
+  logout();
+});
+
+// Login functionality (from auth.js)
+(function(){
+  const form = document.getElementById('loginForm');
+  const errorEl = document.getElementById('error');
+  const msgEl = document.getElementById('msg');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorEl.textContent = '';
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value.trim();
+      if (!username || !password) { errorEl.textContent = 'Username and password required'; return; }
+      try {
+        const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username, password }) });
+        if (!res.ok) {
+          const d = await res.json();
+          errorEl.textContent = d.message || 'Login failed';
+          return;
+        }
+        msgEl.style.display = 'block';
+        msgEl.textContent = 'Login successful. Redirecting...';
+        setTimeout(() => {
+          document.getElementById('loginSection').style.display = 'none';
+          document.getElementById('appSection').style.display = '';
+          location.hash = 'dashboard';
+          setActiveRoute('dashboard');
+        }, 600);
+      } catch (err) {
+        errorEl.textContent = 'Network error';
+      }
+    });
+  }
+})();
+
+// Admin dashboard logic (from admin.js)
+const fuelTableBody = document.querySelector('#fuelTable tbody');
+const empTableBody = document.querySelector('#empTable tbody');
+
+async function loadFuel() {
+  const res = await fetch('/api/fuel');
+  if (!res.ok) { if (res.status === 401) showLogin(); return; }
+  const fuels = await res.json();
+  fuelTableBody.innerHTML = '';
+  fuels.forEach((f) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${f.id}</td>
+      <td>${f.type}</td>
+      <td><input type="number" step="0.01" value="${f.price_per_liter}" data-id="${f.id}" class="input" style="max-width:110px"></td>
+      <td><input type="number" step="0.01" value="${f.stock_liters}" data-id="${f.id}" class="input" style="max-width:110px"></td>
+      <td class="actions">
+        <button class="btn secondary" data-action="save" data-id="${f.id}">Save</button>
+        <button class="btn danger" data-action="delete" data-id="${f.id}">Delete</button>
+      </td>`;
+    fuelTableBody.appendChild(tr);
+  });
+}
+
+async function loadEmployees() {
+  const res = await fetch('/api/employees');
+  if (!res.ok) { if (res.status === 401) showLogin(); return; }
+  const emps = await res.json();
+  empTableBody.innerHTML = '';
+  emps.forEach((e) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${e.id}</td>
+      <td><input value="${e.name}" class="input" data-field="name" data-id="${e.id}"/></td>
+      <td><input value="${e.role}" class="input" data-field="role" data-id="${e.id}"/></td>
+      <td><input value="${e.phone ?? ''}" class="input" data-field="phone" data-id="${e.id}"/></td>
+      <td class="actions">
+        <button class="btn secondary" data-action="save-emp" data-id="${e.id}">Save</button>
+        <button class="btn danger" data-action="delete-emp" data-id="${e.id}">Delete</button>
+      </td>`;
+    empTableBody.appendChild(tr);
+  });
+}
+
+document.getElementById('addFuelBtn').addEventListener('click', async () => {
+  const type = document.getElementById('fuelType').value.trim();
+  const price = Number(document.getElementById('fuelPrice').value);
+  const stock = Number(document.getElementById('fuelStock').value);
+  if (!type || !(price >= 0) || !(stock >= 0)) return alert('Please fill valid values');
+  const res = await fetch('/api/fuel', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ type, price_per_liter: price, stock_liters: stock }) });
+  if (!res.ok) return alert('Error creating fuel');
+  document.getElementById('fuelType').value = '';
+  document.getElementById('fuelPrice').value = '';
+  document.getElementById('fuelStock').value = '';
+  loadFuel();
+});
+
+fuelTableBody.addEventListener('click', async (e) => {
+  const target = e.target;
+  if (!(target instanceof HTMLElement)) return;
+  const action = target.getAttribute('data-action');
+  const id = target.getAttribute('data-id');
+  if (!id) return;
+  if (action === 'save') {
+    const inputs = fuelTableBody.querySelectorAll(`input[data-id="${id}"]`);
+    const price = Number(inputs[0].value);
+    const stock = Number(inputs[1].value);
+    const res = await fetch(`/api/fuel/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ price_per_liter: price, stock_liters: stock }) });
+    if (!res.ok) return alert('Update failed');
+    loadFuel();
+  }
+  if (action === 'delete') {
+    if (!confirm('Delete this fuel?')) return;
+    const res = await fetch(`/api/fuel/${id}`, { method: 'DELETE' });
+    if (!res.ok) return alert('Delete failed');
+    loadFuel();
+  }
+});
+
+document.getElementById('addEmpBtn').addEventListener('click', async () => {
+  const name = document.getElementById('empName').value.trim();
+  const role = document.getElementById('empRole').value.trim();
+  const phone = document.getElementById('empPhone').value.trim();
+  if (!name || !role) return alert('Name and role required');
+  const res = await fetch('/api/employees', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, role, phone }) });
+  if (!res.ok) return alert('Error creating employee');
+  document.getElementById('empName').value = '';
+  document.getElementById('empRole').value = '';
+  document.getElementById('empPhone').value = '';
+  loadEmployees();
+});
+
+empTableBody.addEventListener('click', async (e) => {
+  const target = e.target;
+  if (!(target instanceof HTMLElement)) return;
+  const action = target.getAttribute('data-action');
+  const id = target.getAttribute('data-id');
+  if (!id) return;
+  if (action === 'save-emp') {
+    const rowInputs = empTableBody.querySelectorAll(`input[data-id="${id}"]`);
+    const data = { name: '', role: '', phone: '' };
+    rowInputs.forEach((input) => {
+      const field = input.getAttribute('data-field');
+      data[field] = input.value;
+    });
+    const res = await fetch(`/api/employees/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+    if (!res.ok) return alert('Update failed');
+    loadEmployees();
+  }
+  if (action === 'delete-emp') {
+    if (!confirm('Delete this employee?')) return;
+    const res = await fetch(`/api/employees/${id}`, { method: 'DELETE' });
+    if (!res.ok) return alert('Delete failed');
+    loadEmployees();
+  }
+});
+
+function showLogin() {
+  document.getElementById('appSection').style.display = 'none';
+  document.getElementById('loginSection').style.display = '';
+}
+
+// Billing logic (from billing.js)
+const fuelSelect = document.getElementById('fuelSelect');
+const priceInput = document.getElementById('pricePerLiter');
+const qtyInput = document.getElementById('quantityLiters');
+const totalEl = document.getElementById('totalAmount');
+const billMsgEl = document.getElementById('billMsg');
+let fuels = [];
+
+async function loadFuelOptions() {
+  const res = await fetch('/api/fuel');
+  if (!res.ok) { if (res.status === 401) showLogin(); return; }
+  fuels = await res.json();
+  fuelSelect.innerHTML = fuels.map(f => `<option value="${f.id}" data-price="${f.price_per_liter}">${f.type} — Stock: ${Number(f.stock_liters).toFixed(2)}L</option>`).join('');
+  updatePrice();
+}
+
+function updatePrice() {
+  const selected = fuelSelect.options[fuelSelect.selectedIndex];
+  const price = Number(selected?.getAttribute('data-price') || 0);
+  priceInput.value = price.toFixed(2);
+}
+
+function calculateTotal() {
+  const price = Number(priceInput.value);
+  const qty = Number(qtyInput.value);
+  if (!(price >= 0) || !(qty > 0)) return 0;
+  const total = price * qty;
+  totalEl.textContent = total.toFixed(2);
+  return total;
+}
+
+document.getElementById('calcBtn').addEventListener('click', () => { calculateTotal(); });
+fuelSelect.addEventListener('change', () => { updatePrice(); calculateTotal(); });
+
+document.getElementById('submitSaleBtn').addEventListener('click', async () => {
+  const fuel_id = Number(fuelSelect.value);
+  const quantity_liters = Number(qtyInput.value);
+  const customer_name = document.getElementById('customerName').value.trim() || undefined;
+  if (!(fuel_id > 0) || !(quantity_liters > 0)) return alert('Select fuel and valid quantity');
+  try {
+    const res = await fetch('/api/sales', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ fuel_id, quantity_liters, customer_name }) });
+    const data = await res.json();
+    if (!res.ok) return alert(data.message || 'Sale failed');
+    billMsgEl.style.display = 'block';
+    billMsgEl.textContent = `Sale recorded. Total: ₹${data.total_amount.toFixed(2)}`;
+    qtyInput.value = '';
+    totalEl.textContent = '0.00';
+    await loadFuelOptions();
+  } catch (e) {
+    alert('Network error');
+  }
+});
+
+// Sales logic (from sales.js)
+const salesTbody = document.querySelector('#salesTable tbody');
+async function loadSales() {
+  const res = await fetch('/api/sales');
+  if (!res.ok) { if (res.status === 401) showLogin(); return; }
+  const rows = await res.json();
+  salesTbody.innerHTML = '';
+  rows.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${r.id}</td>
+      <td>${r.fuel_type}</td>
+      <td>${Number(r.quantity_liters).toFixed(2)}</td>
+      <td>${Number(r.price_per_liter).toFixed(2)}</td>
+      <td>${Number(r.total_amount).toFixed(2)}</td>
+      <td>${r.customer_name ?? ''}</td>
+      <td>${new Date(r.created_at).toLocaleString()}</td>`;
+    salesTbody.appendChild(tr);
+  });
+}
+
+// App init
+function init() {
+  // Default to login screen
+  document.getElementById('loginSection').style.display = '';
+  document.getElementById('appSection').style.display = 'none';
+}
+init();
+  </script>
+</body>
+</html>
+
+
